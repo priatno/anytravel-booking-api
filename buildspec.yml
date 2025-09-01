@@ -1,0 +1,28 @@
+version: 0.2
+
+# CodeBuild pipeline for booking-api -> Elastic Beanstalk.
+#
+# Known gaps (intentionally left as-is for the Kiro workshop CI/CD review
+# exercise):
+#   - No automated smoke test after deployment.
+#   - No rollback step if the EB environment health goes red post-deploy.
+#   - Artifact version label is timestamp-based, not tied to the git commit SHA,
+#     so it's hard to tell which build is currently live from the EB console alone.
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 10.0
+  build:
+    commands:
+      - dotnet restore booking-api/BookingApi.sln
+      - dotnet publish booking-api/src/BookingApi/BookingApi.csproj -c Release -o publish
+  post_build:
+    commands:
+      - cd publish && zip -r ../booking-api-$(date +%Y%m%d%H%M%S).zip . && cd ..
+      - aws elasticbeanstalk create-application-version --application-name anytravel-booking-api --version-label build-$(date +%Y%m%d%H%M%S) --source-bundle S3Bucket=$ARTIFACT_BUCKET,S3Key=booking-api.zip
+      - aws elasticbeanstalk update-environment --environment-name anytravel-booking-api-env --version-label build-$(date +%Y%m%d%H%M%S)
+
+artifacts:
+  files:
+    - booking-api-*.zip
