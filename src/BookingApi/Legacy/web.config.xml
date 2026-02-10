@@ -1,0 +1,19 @@
+<!--
+  Leftover from the pre-.NET-8 version of this service (originally deployed
+  as ASP.NET on IIS before moving to the .NET Core on Linux Beanstalk
+  platform). Nothing in the current codebase reads this file. Left in place
+  because nobody was sure if the ops runbook still referenced it.
+
+  connectionStrings here use a different name ("BookingDbConnection") than
+  the ConnectionStrings:BookingDb key used in appsettings.json today.
+-->
+<configuration>
+  <connectionStrings>
+    <add name="BookingDbConnection"
+         connectionString="Server=LEGACY-SQL01;Database=BookingDB;User ID=svc_booking;Password=__REPLACED__;"
+         providerName="System.Data.SqlClient" />
+  </connectionStrings>
+  <appSettings>
+    <add key="TravelXchangeEndpoint" value="http://legacy-gds-gateway.internal/soap" />
+  </appSettings>
+</configuration>
