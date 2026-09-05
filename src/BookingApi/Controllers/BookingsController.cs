@@ -26,6 +26,19 @@ public class BookingsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateBooking([FromBody] Booking booking)
     {
+        // Quick validation pass - we were getting garbage flight numbers and
+        // past-dated bookings from a couple of partner integrations. Doesn't
+        // cover fare amount yet, follow-up ticket pending.
+        if (string.IsNullOrWhiteSpace(booking.FlightNumber))
+        {
+            return BadRequest(new { message = "flightNumber is required." });
+        }
+
+        if (booking.DepartureDate < DateTime.UtcNow)
+        {
+            return BadRequest(new { message = "departureDate cannot be in the past." });
+        }
+
         // Business logic lives here rather than in a service layer — this
         // controller talks directly to BookingDB and to the GDS.
         var availability = await _travelXchange.CheckAvailabilityAsync(new AvailabilityRequest
