@@ -6,7 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>AnyTravel.BookingApi</RootNamespace>
     <AssemblyName>AnyTravel.BookingApi</AssemblyName>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Microsoft.Data.SqlClient needs ICU for collation handling - invariant
+         globalization mode breaks SQL Server connections at runtime. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
