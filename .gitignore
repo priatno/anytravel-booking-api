@@ -4,3 +4,5 @@ obj/
 .vs/
 .DS_Store
 appsettings.Local.json
+publish/
+*.zip
